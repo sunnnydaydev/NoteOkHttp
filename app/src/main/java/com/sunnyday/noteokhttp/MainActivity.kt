@@ -3,6 +3,7 @@ package com.sunnyday.noteokhttp
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.sunnyday.lib_net.CommonOkHttpClient
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,7 +23,6 @@ class MainActivity : AppCompatActivity() {
         // getDataAsync()
         //upLoadKeyValueStringByPost()
         okHttpInterceptor()
-
     }
 
     /**
