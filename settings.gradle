@@ -1,2 +1,3 @@
+include ':lib_net'
 include ':app'
 rootProject.name = "NoteOkHttp"
