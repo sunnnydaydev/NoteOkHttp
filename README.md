@@ -191,21 +191,44 @@ companion object {
      * */
     private fun fileRequestBody(file: File): RequestBody {
         val mediaType = "File/*".toMediaTypeOrNull()
-        return RequestBody.create(mediaType, file)
+        return RequestBody.create(mediType, file)
     }
 ```
 
 
 
-待续~
+###### 3、多文件上传
+
+> 多文件上传很好理解就是上传文件时可以上传多个文件，这多个文件可以为相同文件类型也可以为不同文件类型。
 
 
 
+# 其他
+
+###### 1、常见配置
+
+> 如下是一些常见的对OkHttpClient的配置。
+
+```java
+                val client = OkHttpClient.Builder()                 
+                // 连接超时，客户端请求连接目标域名端口的时间。默认10s。
+                .connectTimeout(60 * 1000, TimeUnit.MILLISECONDS)
+                //读取超时 默认10s
+                .readTimeout(60 * 1000, TimeUnit.MILLISECONDS)
+                //连接失败重试（默认1次，如果想自定义次数可以使用拦截器实现）
+                .retryOnConnectionFailure(true)
+                // 允许重定向
+                .followRedirects(true)
+                // 设置分发器,分发OkHttp的请求，OkHttp的同步、异步请求都是通过分发器实现的。
+                //   XxxDispatcher 自己自定义。
+                .dispatcher(XxxDispatcher)
+                // 设置拦截器，XxxInterceptor自己自定义。
+                .addInterceptor(XxxInterceptor)
+```
+
+###### 2、拦截器
 
 
-
-
-# 总结
 
 # 参考资料
 

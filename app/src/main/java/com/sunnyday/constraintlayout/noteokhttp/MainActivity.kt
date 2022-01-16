@@ -1,12 +1,13 @@
 package com.sunnyday.constraintlayout.noteokhttp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import java.io.File
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -126,7 +127,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * @function post请求，上传json。
+     * 上传键值对.
+     * ps：
+     * 这里直接使用FormBody类即可。然后稍加封装。
+     * */
+    private fun formBody(map: Map<String, String>): FormBody {
+        return FormBody.Builder()
+            .apply {
+                if (map.isNotEmpty()) {
+                    for (key in map.keys) {
+                        map[key]?.let {
+                            add(key, it) // key value 加入form body中
+                        }
+                    }
+                }
+            }.build()
+    }
+
+    /**
+     * @function 上传json。
      *
      *  ps：
      *  1、MediaType.parse("application/json; charset=utf-8") 可获取MediaType类。
@@ -139,11 +158,58 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * @function post请求，上传file。
+     * @function 上传file。
      * */
     private fun fileRequestBody(file: File): RequestBody {
         val mediaType = "File/*".toMediaTypeOrNull()
         return RequestBody.create(mediaType, file)
     }
 
+    /**
+     * 上传多文件。
+     * ps：
+     * 这里为测试数据。自己可根据业务自己封装。
+     * */
+    private fun multipartBody(): MultipartBody {
+        val file = File(cacheDir.absoluteFile.toString() + "a.txt")// 测试数据
+        return MultipartBody.Builder()
+            //设置文件类型，MultipartBody.MIXED 默认值
+            .setType(MultipartBody.MIXED)
+            // 测试数据，上传表单数据
+            .addFormDataPart("name", "Tom")
+            // 测试数据，上传文件
+            .addFormDataPart("file", file.name, fileRequestBody(file))
+            .build()
+    }
+
+    /**
+     * okHttp 一些基础设置
+     * */
+    private fun okHttpBaseSetting() {
+        thread {
+            val client = OkHttpClient.Builder()
+                // 连接超时，客户端请求连接目标域名端口的时间。默认10s。
+                .connectTimeout(60 * 1000, TimeUnit.MILLISECONDS)
+                //读取超时 默认10s
+                .readTimeout(60 * 1000, TimeUnit.MILLISECONDS)
+                //连接失败重试（默认1次，如果想自定义次数可以使用拦截器实现）
+                .retryOnConnectionFailure(true)
+                // 允许重定向
+                .followRedirects(true)
+                // 设置拦截器
+                // .addInterceptor()
+                .build()
+
+            val request = Request.Builder()
+                .get()
+                .url("https://www.baidu.com")
+                .build()
+            val response: Response = client.newCall(request).execute()
+            if (response.isSuccessful) {
+                response.body?.let {
+                    Log.d(TAG, "okHttpBaseSetting#Successful:${it.string()}")
+                }
+            }
+        }
+    }
 }
