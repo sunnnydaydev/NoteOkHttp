@@ -1,13 +1,13 @@
-package com.sunnyday.constraintlayout.noteokhttp
+package com.sunnyday.noteokhttp
 
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.logging.HttpLoggingInterceptor
 import java.io.File
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
@@ -20,7 +20,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         //getDataSync()
         // getDataAsync()
-        upLoadKeyValueStringByPost()
+        //upLoadKeyValueStringByPost()
+        okHttpInterceptor()
+
     }
 
     /**
@@ -183,23 +185,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * okHttp 一些基础设置
+     * okHttp 拦截器 Test
+     * 1、HttpLoggingInterceptor，这个为官方提供的库com.squareup.okhttp3:logging-interceptor:4.9.3
+     * 2、自定义超时重试拦截器
      * */
-    private fun okHttpBaseSetting() {
+    private fun okHttpInterceptor() {
+        val httpLogInterceptor = HttpLoggingInterceptor()
+        //默认Level.NONE
+        httpLogInterceptor.level = HttpLoggingInterceptor.Level.BODY
         thread {
             val client = OkHttpClient.Builder()
-                // 连接超时，客户端请求连接目标域名端口的时间。默认10s。
-                .connectTimeout(60 * 1000, TimeUnit.MILLISECONDS)
-                //读取超时 默认10s
-                .readTimeout(60 * 1000, TimeUnit.MILLISECONDS)
-                //连接失败重试（默认1次，如果想自定义次数可以使用拦截器实现）
-                .retryOnConnectionFailure(true)
-                // 允许重定向
-                .followRedirects(true)
-                // 设置拦截器
-                // .addInterceptor()
+                .addInterceptor(httpLogInterceptor)
+                .addInterceptor(MockResponseInterceptor())
                 .build()
-
             val request = Request.Builder()
                 .get()
                 .url("https://www.baidu.com")
@@ -207,9 +205,15 @@ class MainActivity : AppCompatActivity() {
             val response: Response = client.newCall(request).execute()
             if (response.isSuccessful) {
                 response.body?.let {
-                    Log.d(TAG, "okHttpBaseSetting#Successful:${it.string()}")
+                    Log.d(TAG, "okHttpInterceptor#Successful:${it.string()}")
                 }
+            }else{
+                Log.d(TAG, "okHttpInterceptor#False")
+                Log.d(TAG, "response.code:${response.code}")
+                Log.d(TAG, "response.message:${response.message}")
+                Log.d(TAG, "response.body.string:${response.body?.string()}")
             }
         }
     }
+
 }
