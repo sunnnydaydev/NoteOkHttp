@@ -22,6 +22,9 @@ class CommonOkHttpClient private constructor() {
                 .connectTimeout(DEFAULT_TIME_OUT, TimeUnit.SECONDS)//连接超时
                 .readTimeout(DEFAULT_TIME_OUT, TimeUnit.SECONDS)//读超时
                 .writeTimeout(DEFAULT_TIME_OUT, TimeUnit.SECONDS)//写超时
+//                .addInterceptor {
+//
+//                }
                 .followRedirects(true)// 允许重定向
                 // 添加对所有https的支持,
                 // true: 支持任意类型的https（无论官方购买的https，或者是自己生成的https请求）

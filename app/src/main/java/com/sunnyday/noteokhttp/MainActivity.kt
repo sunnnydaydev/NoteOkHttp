@@ -4,6 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.sunnyday.lib_net.CommonOkHttpClient
+import com.sunnyday.lib_net.callbacks.CommonJsonCallback
+import com.sunnyday.lib_net.listener.DisposeDataListener
+import com.sunnyday.lib_net.model.BaseModel
+import com.sunnyday.lib_net.request.CommonRequest
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,7 +26,23 @@ class MainActivity : AppCompatActivity() {
         //getDataSync()
         // getDataAsync()
         //upLoadKeyValueStringByPost()
-        okHttpInterceptor()
+        //  okHttpInterceptor()
+
+       CommonOkHttpClient
+           .instance
+           .sendHttpRequest(
+               CommonRequest.createGetRequest("https://www.baidu.com",null),
+               CommonJsonCallback(object : DisposeDataListener<BaseModel<DataListBean>> {
+                   override fun onSuccess(response: BaseModel<BaseModel<DataListBean>>) {
+
+                   }
+
+                   override fun onFailure(call: Call?, e: Exception) {
+
+                   }
+
+               })
+           )
     }
 
     /**
@@ -207,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                 response.body?.let {
                     Log.d(TAG, "okHttpInterceptor#Successful:${it.string()}")
                 }
-            }else{
+            } else {
                 Log.d(TAG, "okHttpInterceptor#False")
                 Log.d(TAG, "response.code:${response.code}")
                 Log.d(TAG, "response.message:${response.message}")
