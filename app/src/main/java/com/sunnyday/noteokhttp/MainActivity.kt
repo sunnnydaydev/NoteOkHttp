@@ -5,8 +5,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.sunnyday.lib_net.CommonOkHttpClient
 import com.sunnyday.lib_net.callbacks.CommonJsonCallback
-import com.sunnyday.lib_net.listener.DisposeDataListener
-import com.sunnyday.lib_net.model.BaseModel
+import com.sunnyday.lib_net.listener.DisposeBaseListDataListener
+import com.sunnyday.lib_net.model.BaseListModel
 import com.sunnyday.lib_net.request.CommonRequest
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -31,14 +31,15 @@ class MainActivity : AppCompatActivity() {
        CommonOkHttpClient
            .instance
            .sendHttpRequest(
-               CommonRequest.createGetRequest("https://www.baidu.com",null),
-               CommonJsonCallback(object : DisposeDataListener<BaseModel<DataListBean>> {
-                   override fun onSuccess(response: BaseModel<BaseModel<DataListBean>>) {
-
+               CommonRequest.createGetRequest("http://192.168.31.30:8080/OkHttp/TestListJson.json",null),
+               CommonJsonCallback(object : DisposeBaseListDataListener<BaseListModel<DataListBean>> {
+                   override fun onSuccess(response: BaseListModel<BaseListModel<DataListBean>>) {
+                     Log.i(TAG,"onSuccess:${response.dataList?.size}")
                    }
 
                    override fun onFailure(call: Call?, e: Exception) {
-
+                       e.printStackTrace()
+                       Log.i(TAG,"onFailure:${e.message}")
                    }
 
                })

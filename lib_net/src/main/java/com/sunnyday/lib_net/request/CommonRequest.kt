@@ -1,6 +1,5 @@
 package com.sunnyday.lib_net.request
 
-import com.example.selfupdate.net.Request.RequestParams
 import okhttp3.FormBody
 import okhttp3.Request
 import java.lang.StringBuilder
@@ -52,6 +51,7 @@ class CommonRequest {
 
         /**
          * other request，implementation by you want.
+         * 可以吧请求方式定义为接口形式。CommonRequest实现方法。
          * */
         fun createXXXRequest() {
             // implementation here yourself

@@ -3,8 +3,8 @@ package com.sunnyday.lib_net.callbacks
 import android.os.Handler
 import android.os.Looper
 import com.google.gson.Gson
-import com.sunnyday.lib_net.listener.DisposeDataListener
-import com.sunnyday.lib_net.model.BaseModel
+import com.sunnyday.lib_net.listener.DisposeBaseListDataListener
+import com.sunnyday.lib_net.model.BaseListModel
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.Response
@@ -17,7 +17,7 @@ import java.lang.Exception
  * CommonJson callBack, Convert stream data to json String !
  */
 
-class CommonJsonCallback<T>(private val mListener: DisposeDataListener<T>) : Callback {
+class CommonJsonCallback<T>(private val mListener: DisposeBaseListDataListener<T>) : Callback {
 
     private var mHandler: Handler = Handler(Looper.getMainLooper())
 
@@ -44,7 +44,7 @@ class CommonJsonCallback<T>(private val mListener: DisposeDataListener<T>) : Cal
     private fun handleStringJson(jsonStr: String?) {
 
         try {
-            val obj = Gson().fromJson<BaseModel<T>>(jsonStr, BaseModel::class.java)
+            val obj = Gson().fromJson<BaseListModel<T>>(jsonStr, BaseListModel::class.java)
             if (obj != null) {
                 mListener.onSuccess(obj)
             } else {
