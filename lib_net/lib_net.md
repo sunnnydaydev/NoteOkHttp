@@ -275,3 +275,30 @@ class DataListBean {//接口A的数据对象类型
 }
 ```
 
+###### 小结
+
+使用很easy，以基本的json请求直接获取实体类为栗子：
+
+```java
+
+       CommonOkHttpClient
+           .instance
+           .sendHttpRequest(
+               CommonRequest.createGetRequest("http://192.168.31.30:8080/OkHttp/TestListJson.json",null),
+               CommonJsonCallback(object : DisposeBaseListDataListener<BaseListModel<DataListBean>> {
+                   override fun onSuccess(response: BaseListModel<BaseListModel<DataListBean>>) {
+                     Log.i(TAG,"onSuccess:${response.dataList?.size}")
+                   }
+
+                   override fun onFailure(call: Call?, e: Exception) {
+                       e.printStackTrace()
+                       Log.i(TAG,"onFailure:${e.message}")
+                   }
+
+               })
+           )
+
+```
+
+最基本的封装就实现了~
+
